@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+multiplication program
+*/
+
+int main()
+{
+    double a = 0;
+    double b = 0;
+    double c = 0;
+    int answer = 1; // your loop initializer
+
+    //while loop to kick start the program
+    while (answer == 1)
+    {
+        printf("Please enter a: ");
+        scanf("%lf", &a);
+        printf("Please enter b: ");
+        scanf("%lf", &b);
+
+        //calculation
+        c = a * b;
+
+        // output
+        printf("%2.1f by %2.1f is: %2.1f\n", a, b, c);
+
+        // ask user if they want to continued
+        printf("do you want to continue? ");
+        scanf("%d", &answer);
+        while(answer != 1 && answer != 0)
+        {
+            printf("Please enter 1 to continue or 0 to stop: ");
+            scanf("%d", &answer);
+        }// end while
+
+
+    }//end while
+
+    //goodbye statement
+    printf("====goodBye====");
+
+    return 0;
+}
