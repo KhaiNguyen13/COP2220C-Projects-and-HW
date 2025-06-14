@@ -1,0 +1,140 @@
+/*
+Author Khai Nguyen
+Date 09/17/2024
+Description: Diagnostic program for HVAC compressor. Program uses input from
+technicians multimeter to
+check for the correct Ohms. If not correct the program will determined the
+compressor have a problem.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define SIZE 3 // this defines a variable SIZE of value 3
+//prototypes
+
+
+void getRandomr(double* pR);
+void getRandomv(double* pV);
+void getRandomi(double* pI);
+void getVandI(double* pV, double* pI, double* result);
+int validateRvI( double* pR, double* pV, double* pI, double* result);
+void getReport(double* pR, double* pV, double* pI, double* result);
+
+int main(){
+    //variables
+    double R[SIZE] = {0};
+    double V[SIZE] = {0};
+    double I[SIZE] = {0};
+    double result[SIZE] = {0};
+
+    //pointers
+    double* pR = NULL;
+    double* pV = NULL;
+    double* pI = NULL;
+
+    //adress to pR etc...
+    pR = &R[0];
+    pV = &V[0];
+    pI = &I[0];
+
+    //to kick start the loop
+    int answer = 1;
+
+    //seeding
+    srand(time(0));
+
+    //while loop to start the program
+    while (answer == 1)
+{
+    //get random number funtion forc R,V,I
+    getRandomr(pR);
+    getRandomv(pV);
+    getRandomi(pI);
+
+    //calculation function
+    getVandI(pV, pI, result);
+
+    //validate r to v/i
+    validateRvI(pR, pV, pI, result);
+
+    //get report
+    getReport(pR, pV, pI, result);
+
+    //ask user if they want to continue
+    do
+    {
+        printf("\nAnother evaluation? Enter 1 Yes 0 No: ");
+        scanf("%d", &answer);
+        if (answer != 1 && answer != 0)
+            printf("Please enter 1 Yes 0 No. \n");
+    }while (answer != 1 && answer !=0);
+}
+    printf("\n==========================\t");
+    printf("\n=========goodBye!=========\n");
+    printf("==========================\n");
+return 0;
+}
+//===================================================
+// get random function R
+void getRandomr(double* pR)
+{
+    for(int i = 0; i < 10; i++){
+        pR[i] = rand()% 10 + 1;
+    }
+}
+
+//get random funciton V
+void getRandomv(double* pV)
+{
+    for(int i = 0; i < 10; i++){
+        pV[i] = rand()% 10 + 1;
+    }
+}
+
+//get random function I
+void getRandomi(double* pI)
+{
+    for(int i = 0; i < 10; i++){
+        pI[i] = rand()% 10 + 1;
+    }
+}
+//====================================================
+// get v and I function
+void getVandI(double* pV, double* pI, double* result)
+{
+    for(int i = 0; i < SIZE; i++){
+        result[i] = pV[i] / pI[i];
+    }
+}
+//====================================================
+//validateRvI(pR, pV, pI, pResult);
+int validateRvI( double* pR, double* pV, double* pI, double* result)
+{
+    for(int i = 0; i < SIZE; i++){
+        double fivePmargin = pR[i] * 0.05;
+        if(result[i] >= pR[i] - fivePmargin && result[i] <= pR[i] + fivePmargin)
+        {
+            printf("V/I = %2.1f, R = %2.1f", result[i], pR[i]);
+        }else{
+            printf("V/I = %2.1f, R = %2.1f", result[i], pR[i]);
+        }
+    }
+}
+//====================================================
+//show result function
+void getReport(double* pR, double* pV, double* pI, double* result)
+{
+    for(int i = 0; i < SIZE; i++){
+    printf("\n\n");
+    printf("\n End report \n");
+    printf("R: %2.1f", pR[i]);
+    printf("V: %2.1f", pV[i]);
+    printf("I: %2.1f", pI[i]);
+    printf("V/I is : %2.1f", result[i] );
+    }
+}
+
+
+
+
+
