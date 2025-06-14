@@ -1,0 +1,253 @@
+/*
+Author:
+Date:
+Description: The optimal temperature of an engine is between 190 and 220 degrees Fahrenheit, the temperature of an engine
+            will affect the operation of an engine. IF the temp is less than 190, the Ignition is advanced, if within that interval, the ignition is base timing, if more than  240
+            the ignition is retarded. The car computer manages the ignition. ALso, when the temperature is over 240, two fans are turned on, if within the interval, one fan will turn on, if less than 190
+            the fan is turned off....in theory.
+            What to do: see full spec in the Word document for this exam
+*/
+//------------------------------
+//add all the libraries you need:
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
+//------------------------------
+//all your #define if you got more to add
+#define buffer 80
+#define idMax 6
+#define SIZE 5
+#define IDS {"001111", "002222", "003333", "004444", "005555"}
+#define Temp {70, 75, 82, 76, 72}
+//------------------------------
+
+
+struct Engine
+{
+    char engineID[idMax];
+    struct coolantSystem
+    {
+        int coolantTemp; //generated randomly
+        char state[buffer]; //a statement about the action of the car's ECU (Engine Control Unit = Computer): Retarded, Base, Advanced: see description above
+        bool Fan1; //on/off
+        bool Fan2; //on/off
+    }coolSystem;
+
+}typedef Engine;
+//-------------------------
+//All prototypes:
+int menu();
+void populateEngine(Engine* peng);
+int searchSet(Engine* peng, char* searchID);
+void genTemp(Engine* peng);
+void engineState(Engine* peng);
+void fanStat(Engine* peng);
+int searhDisp(Engine* engineState, char* ID);
+//------------------------------
+
+int main()
+{
+    //declare the needed structures: note that we only have 5 engines
+        Engine* peng = malloc(SIZE * sizeof(Engine));
+    //declare all the variables you need
+        int option = 0;
+        char searchID[5] = " ";
+        char input[buffer] = " ";
+        char* pinput = NULL;
+        int foundAt = 0;
+    //start your program
+
+    while(option != 4)
+    {
+        option = menu();
+        switch(option)
+        {
+            case 1: populateEngine(peng);
+                    printf("press any key to continue...\n");
+                    getch();
+                    break;
+            case 2: printf("Enter the ID of the engine: ");
+                    pinput = fgets(input, buffer, stdin);
+                    strtok(pinput, "\n");
+                    strcpy(searchID, pinput);
+                    foundAt = searchSet(peng, searchID);
+                    if(foundAt == -1)
+                        printf("%s was not found!\n", searchID);
+                    else
+                        genTemp(peng + foundAt);
+                        engineState(peng + foundAt);
+                        fanStat(peng + foundAt);
+                        printf("Parameters are set!\n");
+                        printf("\n");
+                    break;
+            case 3: printf("Enter the ID of the engine: ");
+                    pinput = fgets(input, buffer, stdin);
+                    strtok(pinput, "\n");
+                    strcpy(searchID, pinput);
+                    foundAt = searhDisp(peng, searchID);
+                    break;
+            case 4: printf("good bye");
+                    break;
+            default:
+                    printf("Wrong choice!\n");
+        }//end switch
+    }//end WHile loop
+    //call the functions needed based on the menu
+    //repeat
+    return 0;
+}//
+//==========================================================================
+int menu()
+{
+    char input[buffer] =" ";
+    char* pinput = NULL;
+    int option = 0;
+    printf("-1-Populate All Engines\n"
+           "-2-Search for an Engine and set Parameters\n"
+           "-3-Search for an engine and display all data\n"
+           "-4-Quit program\n"
+           "\t\tEnter selection 1-4: \n");
+    pinput = fgets(input, buffer, stdin);
+    strtok(pinput, "\n");
+    //validate: digits only
+    option = atoi(pinput);
+    //parse input, store in option and then return option
+    return option;
+}//end menu
+//-----------------------------------------------
+//code a function that loads all 5 engines from the table in the Word document
+//into this struct of struct note that all fields are not populated except for the engine ID
+void populateEngine(Engine* peng)
+{
+    char* ids[5] = IDS;
+    char* temp[5] = Temp;
+    for(int i = 0; i < SIZE; i++)
+    {
+        strcpy((peng + i)->engineID, *(ids + i));
+        (peng + i)->coolSystem.coolantTemp = temp[i];
+        strcpy((peng + i)->coolSystem.state, "N/A");
+        (peng + i)->coolSystem.Fan1 = false;
+        (peng + i)->coolSystem.Fan2 = false;
+
+    }
+    //to print it
+    for(int i = 0; i < SIZE; i++)
+    {
+        printf("Engine ID:                 %s\n"
+               "Coolant Temp/ambient Temp: %d\n"
+               "ECU action/state:          %s\n", (peng + i)->engineID,
+               (peng + i)->coolSystem.coolantTemp, (peng + i)->coolSystem.state);
+        if((peng + i)->coolSystem.Fan1 == false && (peng + i)->coolSystem.Fan2 == false)
+        {
+            printf("Fan 1 operation: off\n"
+                   "Fan 2 operation: off\n");
+        }
+        else if((peng + i)->coolSystem.Fan1 == true && (peng + i)->coolSystem.Fan2 == true)
+        {
+            printf("Fan 1 operation: on\n"
+                   "Fan 2 operation: on\n");
+        }
+        else
+        {
+            printf("Fan 1 operation: on\n"
+                   "Fan 2 operation: off\n");
+        }
+        printf("\n");
+    }
+}
+//-----------------------------------------------
+//code a function that searches fro an engine by ID and when found populate its
+//remaining fields with data: temperature, state, fan one operation, fan 2 operation
+int searchSet(Engine* peng, char* searchID)
+{
+    for(int i = 0; i < SIZE; i++)
+    {
+        if(strcmp(searchID, (peng + i)->engineID) == 0)
+            return i;
+    }
+    return -1;
+}
+//-----------------------------------------------
+//code a function that generates at random a temperature value within the interval
+//]190, 240[ for the engine you searched
+void genTemp(Engine* peng)
+{
+    srand(time(0));
+    ((peng)->coolSystem.coolantTemp = rand() % 110 + 190);
+}
+//-----------------------------------------------
+//code a function that determines the state of an engine based on the ECU output
+void engineState(Engine* peng)
+{
+    if((peng)->coolSystem.coolantTemp < 190)
+    {
+        strcpy((peng)->coolSystem.state, "advance");
+    }
+    else if((peng)->coolSystem.coolantTemp > 240)
+    {
+        strcpy((peng)->coolSystem.state, "retarded");
+    }
+    else
+    {
+        strcpy((peng)->coolSystem.state, "based");
+    }
+}
+//-----------------------------------------------
+//code a function that determines the status of Fan1 and Fan2 based on the temperature
+void fanStat(Engine* peng)
+{
+    if((peng)->coolSystem.coolantTemp < 190)
+    {
+        ((peng)->coolSystem.Fan1 = false);
+        ((peng)->coolSystem.Fan2 = false);
+    }
+    else if ((peng)->coolSystem.coolantTemp > 240)
+    {
+        ((peng)->coolSystem.Fan1 = true);
+        ((peng)->coolSystem.Fan2 = true);
+    }
+    else
+    {
+        ((peng)->coolSystem.Fan1 = true);
+        ((peng)->coolSystem.Fan2 = false);
+    }
+}
+//-----------------------------------------------
+//display all data about a given engine searched and found
+int searhDisp(Engine* peng, char* searchID)
+{
+    int foundAt = searchSet(peng, searchID);
+    if(foundAt != -1)
+    {
+        printf("Engine ID: %s\n"
+               "Coolant Temp: %d\n"
+               "ECU State: %s\n", (peng + foundAt)->engineID, (peng + foundAt)->coolSystem.coolantTemp,
+               (peng + foundAt)->coolSystem.state);
+        if((peng + foundAt)->coolSystem.Fan1 == false && (peng + foundAt)->coolSystem.Fan2 == false)
+        {
+            printf("Fan 1 operation: off\n"
+                   "Fan 2 operation: off\n");
+        }
+        else if((peng + foundAt)->coolSystem.Fan1 == true && (peng + foundAt)->coolSystem.Fan2 == true)
+        {
+            printf("Fan 1 operation: on\n"
+                   "Fan 2 operation: on\n");
+        }
+        else
+        {
+            printf("Fan 1 operation: on\n"
+                   "Fan 2 operation: off\n");
+        }
+        return foundAt;
+    }
+    else
+    {
+        printf("engine not found!\n");
+
+    }
+    return -1;
+}
+//-----------------------------------------------
