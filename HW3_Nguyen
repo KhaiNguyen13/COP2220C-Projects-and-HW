@@ -1,0 +1,147 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+/*
+Author:
+Date:
+Description: HW3 When done , submit your source code only (the .c file).
+*/
+//Add all needed functions' prototype here
+void QuestionOne(int* pArray1, int* pArray2, int size1, int size2, int* pmatchCount);  //update accordingly
+void QuestionTwo(int* pArray3, int size3, int* preverseArray3);
+void QuestionThree(int* pArray4, int size4, int X, int* match);
+int main()
+{
+    //declare all needed arrays and hard code their content for each question
+    //question 1:
+    int array1[8] = {92, 90, 13, 98, 20, 99, 60, 46};
+    int array2[8] = {46, 98, 26, 34, 99, 12, 75, 81};
+    int* pArray1 = &array1[0];
+    int* pArray2 = &array2[0];
+
+    //question 2:
+    int array3[8] = {138 , 188 , 39, 132, 119 , 111, 135, 127};
+    int reverseArray3[8] = {0};
+
+    //question 3:
+    int array4[10] = {46, 8, 13, 64, 79, 87, 13, 15, 35, 13};
+    int* pArray4 = &array4[0];
+    //code all needed variables
+    //question 1:
+    int matchCount = 0;
+
+    //question 2:
+    int* pArray3 = &array3[0];
+    int* preverseArray3 = &reverseArray3[0];
+
+    //question 3:
+    int X = 13;
+    int* match = 0;
+
+    int selection = 0;
+    while (selection != 6)
+    {
+        system("cls");
+        printf("\n-1-Question 1\n"
+                 "-2-Question 2\n"
+                 "-3-Question 3\n"
+                 "-4-XC1\n"
+                 "-5-XC2\n"
+                 "-6-Quit testing questions"
+                 "===>Select option 1 through 5 to test your code: ");
+        scanf("%d", &selection);
+        switch(selection)
+        {
+            case 1: QuestionOne(pArray1, pArray2, 8, 8, &matchCount);//recode accordingly
+                    printf("\n");
+                    printf("Array1 ");
+                    for(int i = 0; i < 8; i++)
+                        printf("--%d", *(pArray1 + i));
+                        printf("\n");
+                    printf("Array2 ");
+
+                    for(int j = 0; j < 8; j++)
+                        printf("--%d", *(pArray2 + j));
+                    printf("\nMatch count= %d\n", matchCount);
+                    printf("\nAny key to continue...\n");
+                    getch();
+                    break;
+            case 2: QuestionTwo(pArray3, 8, preverseArray3); //recode accordingly
+                    printf("\n");
+                    printf("      Array3      ");
+                    for(int i = 0; i < 8; i++)
+                        printf("--%d", *(pArray3 + i));
+                        printf("\n");
+                    printf("Reverse of Array3 ");
+
+                    for(int j = 0; j < 8; j++)
+                        printf("--%d", *(preverseArray3 + j));
+                    printf("\nAny key to continue...\n");
+                    getch();
+                    break;
+            case 3: QuestionThree(pArray4, 10, X, &match); //recode accordingly
+                    printf("\nX occured %d times", match);
+                    getch();
+                    break;
+            case 4: XC_One(); //recode accordingly
+                    break;
+            case 5: XC_Two(); //recode accordingly
+                    break;
+            case 6: break; //user decides to quit
+            default:
+                     {
+                         printf("Invalid selection!...hit any key to go back to menu");
+                         getch();
+                     }//end
+                     break;
+
+        }//end switch selection
+    }//end while
+    system("cls");
+    printf("Testing ended!\n\n\n\t\t\t");
+    return 0;
+}//end main
+//===============================================
+void QuestionOne(int* pArray1, int* pArray2, int size1, int size2, int* pmatchCount)  //update accordingly
+{
+    for(int i = 0; i < size1; i++)
+    {
+        for(int j = 0; j < size2; j++)
+        {
+            if(*(pArray1 + i) == *(pArray2 + j))
+            {
+                (*pmatchCount)++;
+            }
+        }
+    }//end i
+}//end QuestionOne
+//================================================
+void QuestionTwo(int* pArray3, int size3, int* preverseArray3)  //update accordingly
+{
+    for(int i = 0; i < size3; i++)
+    {
+        *(preverseArray3 + i) = *(pArray3 + size3 - 1 - i);
+    }
+}//end QuestionTwo
+//================================================
+void QuestionThree(int* pArray4, int size4, int X, int* match)  //update accordingly
+{
+    for(int i = 0; i < size4; i++)
+    {
+        if(X == *(pArray4 + i))
+            (*match)++;
+    }
+}//end QuestionTHree
+//=================================================
+void XC_One()  //update accordingly
+{
+    printf("this is question XC 1 area ...any key to continue");
+    getch();
+}//end XC_One
+//=================================================
+void XC_Two()  //update accordingly
+{
+    printf("this is question XC 2 area ...any key to continue");
+    getch();
+}//end XC_Two
+//for any more extra credits question, add the related code and add the related option under the menu and the related case under the switch in main
